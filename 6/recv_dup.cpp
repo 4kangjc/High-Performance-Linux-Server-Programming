@@ -39,8 +39,6 @@ int main(int argc, char* argv[]) {
     assert(sock >= 0);
 
     if (connect(sock, (struct sockaddr*)&serve_address, sizeof(serve_address)) != -1) {
-        const char* s = "Hello World!";
-        send(sock, s, strlen(s), 0);          //用于测试splice
         char buffer[BUFFER_SIZE];
         memset(buffer, '\0', BUFFER_SIZE);
         recv(sock, buffer, BUFFER_SIZE - 1, 0);
