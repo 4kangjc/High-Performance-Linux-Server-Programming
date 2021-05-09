@@ -50,7 +50,7 @@ public:
     void delTimer(utilTimer* timer);
     void tick();
 private:
-    using Node = std::shared_ptr<utilTimer>;
+    //using Node = std::shared_ptr<utilTimer>;
     struct cmp {
         bool operator()(const utilTimer* lhs, const utilTimer* rhs) const {
             return lhs->expire < rhs->expire;
