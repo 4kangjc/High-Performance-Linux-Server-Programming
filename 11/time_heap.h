@@ -44,7 +44,7 @@ public:
         if (!array) {
             throw std::exception();
         }
-        for (int i = 0; i < cur_size; ++i) {
+        for (int i = 0; i < capacity; ++i) {
             array[i] = nullptr;
         }
     }
@@ -69,11 +69,11 @@ public:
         }
     } 
     ~time_heap() {
-        for (int i = 0; i < cur_size; ++i) {
+        for (int i = 0; i < cur_size; ++i) {      
             delete array[i];
-            array[i] = nullptr;
+            array[i] = nullptr;               //防止二次析构
         }
-        delete []array;
+        delete[] array;
         cur_size = capacity = 0;              // 应该要这句的
     }
 public:
@@ -114,6 +114,7 @@ public:
         if (array[0]) {
             delete array[0];
             array[0] = array[--cur_size];
+            array[cur_size] = nullptr;
             percolate_down(0);
         }
     }
