@@ -71,6 +71,7 @@ public:
     ~time_heap() {
         for (int i = 0; i < cur_size; ++i) {
             delete array[i];
+            array[i] = nullptr;
         }
         delete []array;
         cur_size = capacity = 0;              // 应该要这句的
