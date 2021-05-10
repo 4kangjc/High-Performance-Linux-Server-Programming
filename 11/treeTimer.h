@@ -16,7 +16,7 @@
 #include <map>
 #include <set>
 #include <memory>
-const int BUFFER_SIZE = 64;
+static const int BUFFER_SIZE = 64;
 
 class utilTimer;
 
