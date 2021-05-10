@@ -1,5 +1,5 @@
 /**
- * @file nonactive_conn.cxx
+ * @file testtreeTimer.cxx
  * @author your name (you@domain.com)
  * @brief 
  * @version 0.1
