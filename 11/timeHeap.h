@@ -101,7 +101,7 @@ private:
 		swim(N);
     }
     void pop() {
-		std::swap(c[0], c[c.size() - 1]);
+	std::swap(c[0], c[c.size() - 1]);
         if (c[c.size() - 1] != nullptr) {
             delete c[c.size() - 1];
             c[c.size() - 1] = nullptr;
@@ -144,7 +144,7 @@ public:
         }
     }
 
-    const heapTimer* top() noexcept {
+    const heapTimer* top() noexcept const {
         if (empty()) {
             return nullptr;
         }
