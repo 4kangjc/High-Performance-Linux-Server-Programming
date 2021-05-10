@@ -1,5 +1,5 @@
 /**
- * @file nonactiveConn.cc           时间轮
+ * @file testtw_timer.cc           时间轮
  * @author kangjinci (you@domain.com)
  * @brief 
  * @version 0.1
