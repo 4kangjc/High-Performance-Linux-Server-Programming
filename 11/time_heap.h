@@ -172,5 +172,5 @@ private:
 private:
     heap_timer** array;
     int capacity;
-    int cur_size;
+    int cur_size;                                  // 并不代表真实元素数量，延迟删除的也算，所以如果要写一个size成员函数的话，还需要一个变量del，记录延迟删除的元素个数
 };
