@@ -69,7 +69,7 @@ public:
         }
     } 
     ~time_heap() {
-        for (int i = 0; i < capacity; ++i) {                //书上这里应该不对
+        for (int i = 0; i < cur_size; ++i) {
             delete array[i];
         }
         delete []array;
