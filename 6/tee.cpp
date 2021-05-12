@@ -35,13 +35,13 @@ int main(int argc, char* argv[]) {
     //char input_message[100] = "Hello World!\n";
 	//write(STDIN_FILENO, input_message, sizeof(input_message));
 
-    close(STDIN_FILENO);
-	  dup2(pipefd_stdout[1], STDIN_FILENO);
-	  write(pipefd_stdout[1], "abc\n", 4);
+    //close(STDIN_FILENO);
+    //dup2(pipefd_stdout[1], STDIN_FILENO);
+    //write(pipefd_stdout[1], "abc\n", 4);
 
     /* 将标准输入内容输入管道 pipfd_stdout */
     ret = splice(STDIN_FILENO, NULL, pipefd_stdout[1], NULL, 32768, SPLICE_F_MOVE | SPLICE_F_MORE);
-    assert(ret != -1);                            // 原因未知
+    assert(ret != -1);
     /* 将管道pipefd_stdout的输出复制到管道pipfd_file的输入端 */
     ret = tee(pipefd_stdout[0], pipefd_file[1], 32768, SPLICE_F_NONBLOCK);
     assert(ret != -1);
