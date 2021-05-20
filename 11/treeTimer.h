@@ -93,6 +93,6 @@ TreeTimerSet::~TreeTimerSet() {
         auto pre = *it;
         ++it;
         st.erase(prev(it));
-        delete(pre);
+        delete pre;
     }
 }

@@ -117,7 +117,7 @@ int main(int argc, char* argv[]) {
                     users[connfd].buf[ret - 1] = '\0'; 
                 printf("get %d bytes of client data %s from %d\n", ret, users[connfd].buf, connfd);
                 if (ret < 0) {
-                    if (errno != EAGAIN) {
+                    if (errno != EAGAIN) {                     // 如果读操作出错
                         close(connfd);
                         users[fds[i].fd] = users[fds[user_counter].fd];
                         fds[i] = fds[user_counter];
