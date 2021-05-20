@@ -83,7 +83,7 @@ void TreeTimerSet::tick() {
         pre->cb_func(pre->userData);
         ++it;
         st.erase(prev(it));
-        delete(pre);
+        delete pre;
     }
 }
 
