@@ -46,7 +46,7 @@ void addfd(int epollfd, int fd, bool enable_et) {
     setnonblocking(fd);
 }
 
-/* LT模式的工作流程 */
+/* LT模式的工作流程 */          // LT模式可以为阻塞
 void lt(epoll_event* events, int number, int epollfd, int listenfd) {
     char buf[BUFFER_SIZE];
     for (int i = 0; i < number; ++i) {

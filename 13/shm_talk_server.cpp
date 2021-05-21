@@ -8,7 +8,7 @@
  * @copyright Copyright (c) 2021
  * 
  */
-
+// 一个子进程处理一个客户连接
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
@@ -46,20 +46,20 @@ int epollfd;
 int listenfd;
 int shmfd;
 
-char* share_mem = 0;
+char* share_mem = 0;               // 
 
 client_data* users = 0;            // 客户连接数组。进程用客户连接的编号来索引这个数组，即可取得相关的客户连接数据
-int* sub_process = 0;               // 子进程和客户连接的映射关系表，用进程的PID来索引这个数组，即可取得该进程所处理的客户连接的编号
+int* sub_process = 0;              // 子进程和客户连接的映射关系表，用进程的PID来索引这个数组，即可取得该进程所处理的客户连接的编号
 int user_count = 0;               // 当前客户数量
 bool stop_child = 0;
 
-int setnonblocking(int fd) {
+int setnonblocking(int fd) {                                // 将文件描述符设置为非阻塞
     int old_option = fcntl(fd, F_GETFL);
     fcntl(fd, F_SETFL, old_option | O_NONBLOCK);
     return old_option;
 }
 
-void addfd(int epollfd, int fd) {
+void addfd(int epollfd, int fd) {                          // 注册事件
     epoll_event event;
     event.data.fd = fd;
     event.events = EPOLLIN | EPOLLET;
@@ -67,7 +67,7 @@ void addfd(int epollfd, int fd) {
     setnonblocking(fd);
 }
 
-void sig_handler(int sig) {
+void sig_handler(int sig) {                               
     int save_errno = errno;
     int msg = sig;
     send(sig_pipefd[1], (char*)&msg, 1, 0);
@@ -170,7 +170,7 @@ int main(int argc, char* argv[]) {
     inet_pton(AF_INET, ip, &address.sin_addr);
     address.sin_port = htons(port);
 
-    listenfd = socket(PF_INET, SOCK_STREAM, 0);
+    listenfd = socket(AF_INET, SOCK_STREAM, 0);
     assert(listenfd >= 0);
 
     ret = bind(listenfd, (sockaddr*)&address, sizeof(address));
