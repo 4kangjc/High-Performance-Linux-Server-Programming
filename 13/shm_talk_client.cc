@@ -1,13 +1,13 @@
 /**
  * @file shm_talk_client.cc
- * @author your name (you@domain.com)
+ * @author kangjinci (you@domain.com)
  * @brief 
  * @version 0.1
  * @date 2021-05-22
  * 
  * @copyright Copyright (c) 2021
  * 
- */   // 稍微改改 mytalk_client.cpp即可
+ */
 
 #define _GUN_SOURCE 1
 #include <sys/types.h>
