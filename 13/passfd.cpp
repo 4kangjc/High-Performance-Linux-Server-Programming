@@ -87,7 +87,7 @@ int main() {
     char buf[1024];
     memset(buf, 0, 1024);
     read(fd_to_pass, buf, 1024);
-    printf("I got fd %d and data %s\n", fd_to_pass, buf);
+    printf("I got fd %d and data is %s\n", fd_to_pass, buf);
     close(fd_to_pass);
 
     return 0;
