@@ -167,6 +167,7 @@ int main(int argc, char* argv[]) {
     int ret = 0;
     sockaddr_in address;
     bzero(&address, sizeof(address));
+    address.sin_family = AF_INET;
     inet_pton(AF_INET, ip, &address.sin_addr);
     address.sin_port = htons(port);
 
@@ -262,7 +263,6 @@ int main(int argc, char* argv[]) {
                     user_count++;
                 }
             } else if (sockfd == sig_pipefd[0] && events[i].events & EPOLLIN) {
-                int sig;
                 char signals[1024];
                 ret = recv(sig_pipefd[0], signals, sizeof(signals), 0);
                 if (ret == -1) {
@@ -270,50 +270,52 @@ int main(int argc, char* argv[]) {
                 } else if (ret == 0) {
                     continue;
                 } else {
-                    for (int i = 0; i < ret; ++i) {
-                        switch (signals[i]) {
-                        case SIGCHLD: {
-                            pid_t pid;
-                            int stat;
-                            while (pid == waitpid(-1, &stat, WNOHANG) > 0) {
-                                int del_user = sub_process[pid];
-                                sub_process[pid] = -1;
-                                if (del_user < 0 || del_user > USER_LIMIT) {
-                                    continue;
+                    for (int j = 0; j < ret; ++j) {
+                        switch (signals[j]) {
+                            case SIGCHLD: {
+                                pid_t pid;
+                                int stat;
+                                while ((pid = waitpid(-1, &stat, WNOHANG)) > 0) {
+                                    int del_user = sub_process[pid];
+                                    sub_process[pid] = -1;
+                                    if (del_user < 0 || del_user > USER_LIMIT) {
+                                        continue;
+                                    }
+                                    /* 清空第del_user个客户连接使用的相关数据 */
+                                    epoll_ctl(epollfd, EPOLL_CTL_DEL, users[del_user].pipefd[0], 0);
+                                    close(users[del_user].pipefd[0]);
+                                    users[del_user] = users[--user_count];
+                                    sub_process[users[del_user].pid] = del_user;
+                                    printf("child %d exit, now we have %d users\n", del_user, user_count); 
                                 }
-                                /* 清空第del_user个客户连接使用的相关数据 */
-                                epoll_ctl(epollfd, EPOLL_CTL_DEL, users[del_user].pipefd[0], 0);
-                                close(users[del_user].pipefd[0]);
-                                users[del_user] = users[--user_count];
-                                sub_process[users[del_user].pid] = del_user;
-                            }
-                            if (terminate && user_count == 0) {
-                                stop_server = true;
-                            }
-                        } 
-                        case SIGTERM:
-                        case SIGINT: {
-                            printf("kill all the child now\n");
-                            if (user_count == 0) {
-                                stop_server = true;
+                                if (terminate && user_count == 0) {
+                                    stop_server = true;
+                                }
+                                break;
+                            } 
+                            case SIGTERM:
+                            case SIGINT: {
+                                printf("kill all the child now\n");
+                                if (user_count == 0) {
+                                    stop_server = true;
+                                    break;
+                                }
+                                for (int j = 0; j < user_count; ++j) {
+                                    int pid = users[j].pid;
+                                    kill(pid, SIGTERM);
+                                }
+                                terminate = true;
                                 break;
                             }
-                            for (int i = 0; i < user_count; ++i) {
-                                int pid = users[i].pid;
-                                kill(pid, SIGTERM);
-                            }
-                            terminate = true;
-                            break;
-                        }
-                        default:
-                            break;
+                            default:
+                                break;
                         }
                     }
                 }
             } else if (events[i].events & EPOLLIN) {                   // 某个子进程向父进程写入了数据
                 int child = 0;
                 ret = recv(sockfd, (char*)&child, sizeof(child), 0);
-                printf("read data from child accross pipe\n");
+                printf("read data from child: %d accross pipe\n", child);
                 if (ret == -1) {
                     continue;
                 } else if (ret == 0) {
