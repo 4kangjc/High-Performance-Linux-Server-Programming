@@ -37,7 +37,7 @@ struct client_data {
     sockaddr_in address;                 // 客户端的socket地址
     int connfd;                          // socket文件描述符
     pid_t pid;                          // 处理这个连接的子进程的PID
-    int pipefd[2];                      // 和父进程通信的管道
+    int pipefd[2];                      // 和父进程通信的管道 
 };
 
 static const char* shm_name = "/my_shm";
@@ -46,7 +46,7 @@ int epollfd;
 int listenfd;
 int shmfd;
 
-char* share_mem = 0;               // 
+char* share_mem = 0;               // 共享内存首地址
 
 client_data* users = 0;            // 客户连接数组。进程用客户连接的编号来索引这个数组，即可取得相关的客户连接数据
 int* sub_process = 0;              // 子进程和客户连接的映射关系表，用进程的PID来索引这个数组，即可取得该进程所处理的客户连接的编号
@@ -81,7 +81,7 @@ void addsig(int sig, void (*handler)(int), bool restart = true) {
     if (restart) {
         sa.sa_flags |= SA_RESTART;                                   // 让中断的系统重新调用
     }
-    sigfillset(&sa.sa_mask);
+    sigfillset(&sa.sa_mask);                                        // 目前理解 : 信号处理函数期间屏蔽所有信号
     assert(sigaction(sig, &sa, nullptr) != -1);
 }
 
@@ -205,7 +205,7 @@ int main(int argc, char* argv[]) {
 
     shmfd = shm_open(shm_name, O_CREAT | O_RDWR, 0666);
     assert(shmfd != -1);
-    ret = ftruncate(shmfd, USER_LIMIT * BUFFER_SIZE);
+    ret = ftruncate(shmfd, USER_LIMIT * BUFFER_SIZE);        // 参数fd指定的文件大小改为参数length指定的大小
     assert(ret != -1);
 
     share_mem = (char*)mmap(NULL, USER_LIMIT * BUFFER_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, shmfd, 0);
