@@ -31,6 +31,7 @@ void pv(int sem_id, int op) {
 }
 
 int main(int argc, char* argv[]) {
+    //int sem_id = semget(123, 1, 0666 | IPC_CREAT);     不知道这两种方式有什么差别(在父子进程间) 还是不知道IPC_PRIVATE有什么特殊之处
     int sem_id = semget(IPC_PRIVATE, 1, 0666);
     semun sem_un;
     sem_un.val = 1;

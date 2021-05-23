@@ -8,7 +8,7 @@
  * @copyright Copyright (c) 2021
  * 
  */
-// 一个子进程处理一个客户连接        g++ shm_talk_server.cc -lrt -o shm_talk_server
+// 一个子进程处理一个客户连接        g++ shm_talk_server.cpp -lrt -o shm_talk_server
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
