@@ -71,7 +71,7 @@ void worker(int sockfd, int epollfd) {
         } else {
             printf("get content: %s\n", buf);
             memset(buf, '\0', BUFFER_SIZE);
-            //sleep(5);
+            sleep(5);
         }
     }
     printf("end thread receiving data on fd: %d\n", sockfd);

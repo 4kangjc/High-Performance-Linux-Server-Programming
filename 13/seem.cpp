@@ -26,7 +26,7 @@ void pv(int sem_id, int op) {
     sembuf sem_b;
     sem_b.sem_num = 0;
     sem_b.sem_op = op;
-    sem_b.sem_flg = SEM_UNDO;
+    sem_b.sem_flg = SEM_UNDO;     // 当进程退出时取消正在进行的semop操作
     semop(sem_id, &sem_b, 1);
 }
 
