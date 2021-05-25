@@ -28,15 +28,15 @@ private:
 
 template<typename T>
 threadpoll<T>::threadpoll(size_t thread_number, size_t max_requests) : thread_number(thread_number), max_requests(max_requests) {
-        for (int i = 0; i < thread_number; ++i) {
-            printf("create the %dth thread\n", i);
-            if (pthread_create(threads + i, NULL, worker, this) != 0) {
-                throw std::exception();
-            }
-            if (pthread_detach(thread[i])) {
-                throw std::exception();
-            }
+    for (int i = 0; i < thread_number; ++i) {
+        printf("create the %dth thread\n", i);
+        if (pthread_create(threads + i, NULL, worker, this) != 0) {
+            throw std::exception();
         }
+        if (pthread_detach(thread[i])) {
+            throw std::exception();
+        }
+    }
 }
 
 template<typename T>
