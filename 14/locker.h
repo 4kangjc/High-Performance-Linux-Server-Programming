@@ -13,6 +13,7 @@
 #include <exception>
 #include <pthread.h>
 #include <semaphore.h>
+#include <functional>
 
 class sem {
 public:
@@ -50,9 +51,6 @@ public:
     bool unlock() {
         return pthread_mutex_unlock(&m_mutex) == 0;
     }
-    // auto& get() {
-    //     return m_mutex;
-    // }
     friend class cond;
 private:
     pthread_mutex_t m_mutex;
@@ -69,11 +67,12 @@ public:
     ~cond() {
         pthread_cond_destroy(&m_cond);
     }
-    bool wait() {
+    bool wait(std::function<bool()> f) {                   // 条件
         int ret = 0;
         m_mutex.lock();
-        //ret = pthread_cond_wait(&m_cond, &m_mutex.get());
-        ret = pthread_cond_wait(&m_cond, &m_mutex.m_mutex);
+        while (!f()) {
+            ret = pthread_cond_wait(&m_cond, &m_mutex.m_mutex);
+        }
         m_mutex.unlock();
         return ret == 0;
     }
