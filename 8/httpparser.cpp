@@ -23,13 +23,13 @@
 static const int BUFFER_SIZE = 4096;
 
 enum CHECK_STATE {
-    CHECK_STATE_REQUESTLINE = 0,                        // 当前正在分析请求行
+    CHECK_STATE_REQUESTLINE = 0,                       // 当前正在分析请求行
     CHECK_STATE_HEADER                                 // 当前正在分析头部字段
 };
 
 enum LINE_STATUS {
     LINE_OK = 0,                                       // 读取一个完整的行
-    LINE_BAD,                                           // 行出错
+    LINE_BAD,                                          // 行出错
     LINE_OPEN                                          // 行数据尚不完整
 };
 
@@ -84,7 +84,7 @@ HTTP_CODE parse_requestline(char* temp, CHECK_STATE& checkstate) {         // GE
     } else {
         return BAD_REQUEST;
     }
-    url += strspn(url, " \t");                                           // 防止还有空格或tab????
+    url += strspn(url, " \t");                     //检索字符串 str1 中第一个不在字符串 str2 中出现的字符下标  防止还有空格或tab????
     char* version = strpbrk(url, " \t");
     if (!version) {
         return BAD_REQUEST;
