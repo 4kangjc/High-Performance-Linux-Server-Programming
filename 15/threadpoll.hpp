@@ -6,6 +6,7 @@
 #include <queue>
 #include "locker.h"
 #include <thread>
+#include <atomic>
 
 template<typename T>
 class threadpoll {
@@ -23,7 +24,8 @@ private:
     std::queue<T*> workqueue;                   // 请求队列
     locker queuelocker;                         // 保护请求队列的互斥锁
     sem queuestat;                              // 是否有任务需要处理
-    bool stop = false;                          // 是否结束线程
+    //bool stop = false;                          // 是否结束线程
+    std::atomic_bool stop{ false };             // 是否结束线程
 };
 
 template<typename T>
