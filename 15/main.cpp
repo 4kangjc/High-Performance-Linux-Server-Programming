@@ -9,7 +9,6 @@
 #include <cassert>
 #include <sys/epoll.h>
 
-#include "locker.h"
 #include "threadpoll.hpp"
 #include "http_conn.h"
 
@@ -46,7 +45,7 @@ int main(int argc, char* argv[]) {
     addsig(SIGPIPE, SIG_IGN);
     threadpoll<http_conn>* poll = NULL;
     try {
-        poll = new threadpoll<http_conn>;
+        poll = new threadpoll<http_conn>(8);
     } catch(...) {
         return 1;
     }

@@ -4,7 +4,7 @@
 #include <exception>
 #include <pthread.h>
 #include <queue>
-#include "locker.h"
+#include "../14/locker.h"
 #include <thread>
 #include <atomic>
 
@@ -18,7 +18,7 @@ private:
     static void* worker(void* arg);
     void run();
 private:
-    int thread_number;                          // 线程池中的线程数
+    //int thread_number;                          // 线程池中的线程数
     int max_requests;                           // 请求队列中允许的最大请求数
     std::vector<pthread_t> threads;             // 描述线程池的数组
     std::queue<T*> workqueue;                   // 请求队列
@@ -29,13 +29,13 @@ private:
 };
 
 template<typename T>
-threadpoll<T>::threadpoll(size_t thread_number, size_t max_requests) : thread_number(thread_number), max_requests(max_requests) {
+threadpoll<T>::threadpoll(size_t thread_number, size_t max_requests) : threads(thread_number), max_requests(max_requests) {
     for (int i = 0; i < thread_number; ++i) {
         printf("create the %dth thread\n", i);
-        if (pthread_create(threads + i, NULL, worker, this) != 0) {
+        if (pthread_create(&threads[i], NULL, worker, this) != 0) {
             throw std::exception();
         }
-        if (pthread_detach(thread[i])) {
+        if (pthread_detach(threads[i])) {
             throw std::exception();
         }
     }
@@ -54,7 +54,7 @@ bool threadpoll<T>::append(T* request) {
         return false;
     }
     workqueue.push(request);
-    workqueue.unlock();
+    queuelocker.unlock();
     queuestat.post();
     return true;
 }

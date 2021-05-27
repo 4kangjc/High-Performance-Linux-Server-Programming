@@ -84,6 +84,7 @@ void http_conn::init() {
 http_conn::LINE_STATUS http_conn::parse_line() {
     char temp;
     for (; m_check_idx < m_read_idx; ++m_check_idx) {
+        temp = m_read_buf[m_check_idx];
         if (temp == '\r') {
             if (m_check_idx + 1 == m_read_idx) {
                 return LINE_STATUS::LINE_OPEN;
@@ -126,7 +127,7 @@ bool http_conn::read() {
 }
 
 // 解析HTTP请求行，获得请求方法、目标URL，以及HTTP版本号
-http_conn::HTTP_CODE http_conn::parse_request_line(char* text) {
+http_conn::HTTP_CODE http_conn::parse_request_line(char* text) {  // GET http://localhost/index.html HTTP/1.1
     m_url = strpbrk(text, " \t");
     if (!m_url) {
         return HTTP_CODE::BAD_REQUEST;
@@ -134,7 +135,7 @@ http_conn::HTTP_CODE http_conn::parse_request_line(char* text) {
     *m_url++ = '\0';
 
     char* method = text;
-    if (strcasecmp(method, "GET")) {
+    if (strcasecmp(method, "GET") == 0) {
         m_method = METHOD::GET;
     } else {
         return HTTP_CODE::BAD_REQUEST;
@@ -204,8 +205,8 @@ http_conn::HTTP_CODE http_conn::process_read() {
     HTTP_CODE ret = HTTP_CODE::NO_REQUEST;
     char* text = 0;
 
-    while ((m_check_state == CHECK_STATE::CHECK_STATE_CONTENT && line_status == LINE_STATUS::LINE_OK) 
-        || (line_status = parse_line()) == LINE_STATUS::LINE_OK) {
+    while (((m_check_state == CHECK_STATE::CHECK_STATE_CONTENT && line_status == LINE_STATUS::LINE_OK)) 
+        || ((line_status = parse_line()) == LINE_STATUS::LINE_OK)) {
          text = get_line();
          m_start_line = m_check_idx;
          printf("got 1 http line: %s\n", text);
@@ -335,6 +336,7 @@ bool http_conn::add_handers(int content_len) {
     add_content_length(content_len);
     add_linger();
     add_blank_line();
+    return true;
 }
 
 bool http_conn::add_content_length(int content_len) {
