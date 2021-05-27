@@ -27,8 +27,8 @@ public:
     enum class METHOD { GET = 0, POST, HEAD, PUT, DELETE, TRACE, OPTIONS, CONNECT, PATCH };    // HTTP请求方法  65页
     enum class CHECK_STATE { 
         CHECK_STATE_REQUESTLINE,                                    // 当前正在分析请求行
-        CHECK_STATE_HEADER,                                         //  当前正在分析头部字段
-        CHECK_STATE_CONTENT                                         // 
+        CHECK_STATE_HEADER,                                         // 当前正在分析头部字段
+        CHECK_STATE_CONTENT                                         // 当前正在分析消息体
     };   //   主状态机所处的状态
     enum class HTTP_CODE { 
         NO_REQUEST,                                                 // 请求不完整，需要继续读取客户数据
@@ -36,7 +36,7 @@ public:
         BAD_REQUEST,                                                // 客户请求有语法错误
         NO_RESOURCE,                                                // 
         FORBIDDEN_REQUEST,                                          // 客户对资源没有足够的访问权限
-        FILE_REQUEST,                                               //
+        FILE_REQUEST,                                               // 
         INTERNAL_ERROR,                                             // 服务器内部错误
         CLOSED_CONNECTION                                           // 客户端已经关闭连接了
     };    // HTTP请求的结果                                        

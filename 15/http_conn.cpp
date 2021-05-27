@@ -54,7 +54,7 @@ void http_conn::close_conn(bool real_close) {
 }
 
 void http_conn::init(int sockfd, const sockaddr_in& addr) {
-    m_sockfd= sockfd;
+    m_sockfd = sockfd;
     m_address = addr;
     int reuse = 1;
     setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &reuse, sizeof(reuse));
@@ -93,7 +93,7 @@ http_conn::LINE_STATUS http_conn::parse_line() {
                 return LINE_STATUS::LINE_OK;
             }
         } else if (temp == '\n') {
-            if (m_check_idx > 1 && m_read_buf[m_check_idx - 1] == 'r') {
+            if (m_check_idx > 1 && m_read_buf[m_check_idx - 1] == '\r') {
                 m_read_buf[m_check_idx - 1] = '\0';
                 m_read_buf[m_check_idx++] = '\0';
                 return LINE_STATUS::LINE_OK;
@@ -125,6 +125,7 @@ bool http_conn::read() {
     return true;
 }
 
+// 解析HTTP请求行，获得请求方法、目标URL，以及HTTP版本号
 http_conn::HTTP_CODE http_conn::parse_request_line(char* text) {
     m_url = strpbrk(text, " \t");
     if (!m_url) {
@@ -188,6 +189,7 @@ http_conn::HTTP_CODE http_conn::parse_handers(char* text) {
     return HTTP_CODE::NO_REQUEST;
 }
 
+// 我们并没有真正解析HTTP请求，只是判断它是否被完整读入了
 http_conn::HTTP_CODE http_conn::parse_content(char* text) {
     if (m_read_idx >= (m_content_length + m_check_idx)) {
         text[m_content_length] = '\0';
@@ -196,6 +198,7 @@ http_conn::HTTP_CODE http_conn::parse_content(char* text) {
     return HTTP_CODE::NO_REQUEST;
 }
 
+// 主状态机
 http_conn::HTTP_CODE http_conn::process_read() {
     LINE_STATUS line_status = LINE_STATUS::LINE_OK;
     HTTP_CODE ret = HTTP_CODE::NO_REQUEST;
@@ -268,7 +271,7 @@ void http_conn::unmap() {
     }
 }
 
-// 写HTTP响应         ????
+// 写HTTP响应        
 bool http_conn::write() {
     int temp = 0;
     int bytes_have_send = 0;
